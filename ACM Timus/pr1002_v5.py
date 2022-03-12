@@ -1,7 +1,7 @@
 ### Site: https://acm.timus.ru/
 ### Problem: 1002
 
-### Status: Accepted
+### Failed on Test 7
 
 from sys import stdin, stdout
 
@@ -89,7 +89,7 @@ lines = stdin.read().split()
 while lines[index] != '-1':
     telnum = lines[index].strip()
     word_count = int(lines[index+1])
-    words = sorted([word.strip() for word in lines[index+2:index+2+word_count]], key = lambda x: len(x))
+    words = [word.strip() for word in lines[index+2:index+2+word_count]]
     index = index + 2 + word_count
 
     # print('\n' * 3 + '=' * 30)

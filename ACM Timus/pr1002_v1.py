@@ -1,7 +1,7 @@
 ### Site: https://acm.timus.ru/
 ### Problem: 1002
 
-### Status: Accepted
+### Failed on Test 4
 
 from sys import stdin, stdout
 
@@ -35,54 +35,24 @@ def search_words(telnum, words):
     :return:
     """
 
-    solution = []
-    possible_paths = [{'': {'path': [], 'num_index': 0}}]
+    solutions = []
+    possible_paths = [[word] for word in words]
 
-    num_index = 0
     while len(possible_paths) > 0:
         node = possible_paths.pop(0)
-        node_str = node.popitem()
+        node_str = ''.join(node)
         node_num = word_to_num(node_str)
 
         # print(node, node_str, node_num, telnum[:len(node_num)])
         if node_num == telnum[:len(node_num)]:
             if len(node_num) == len(telnum):
-                if len(solution) == 0 or len(node) < len(solution):
-                    solution = node
+                solutions.append(node)
             elif len(node_num) < len(telnum):
                 for word in words:
                     possible_paths = [node + [word]] + possible_paths
         # print(possible_paths)
 
-    return solution
-
-def find_path(telnum,  words):
-    """
-    :param telnum:
-    :param words:
-    :return:
-    """
-
-    solution = []
-    possible_paths = {'': {'numbers': '', 'path': [], 'num_index': 0}}
-
-    while len(possible_paths.keys()) > 0:
-        key = list(possible_paths.keys())[0]
-        node = possible_paths.pop(key)
-        # print(node)
-        if node['numbers'] == telnum:
-            if len(solution) == 0 or len(node['path']) < len(solution):
-                solution = node['path']
-        else:
-            for word in words:
-                # print(word, word_to_num(word), telnum[node['num_index']:node['num_index']+len(word)])
-                if word_to_num(word) == telnum[node['num_index']:node['num_index']+len(word)]:
-                    # print('Hello!')
-                    if node['numbers']+word_to_num(word) not in possible_paths or len(node['path']) < len(possible_paths[node['numbers']+word_to_num(word)]['path']):
-                        possible_paths[node['numbers']+word_to_num(word)] = {'numbers': node['numbers']+word_to_num(word), 'path': node['path'] + [word], 'num_index':node['num_index']+len(word)}
-                # print(possible_paths)
-    return solution
-
+    return solutions
 
 index = 0
 lines = stdin.read().split()
@@ -93,11 +63,10 @@ while lines[index] != '-1':
     index = index + 2 + word_count
 
     # print('\n' * 3 + '=' * 30)
-    # print(telnum, words)
-
-    solution = find_path(telnum, words)
+    solutions = search_words(telnum, words)
     # print(solutions)
-    if len(solution) == 0:
+    if len(solutions) == 0:
         stdout.write('No solution.\n')
     else:
+        solution = min(solutions, key = lambda x: len(x))
         stdout.write(' '.join(solution) + '\n')

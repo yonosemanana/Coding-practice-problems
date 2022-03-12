@@ -1,7 +1,7 @@
 ### Site: https://acm.timus.ru/
 ### Problem: 1002
 
-### Status: Accepted
+### Failed on Test 5, see example https://acm.timus.ru/forum/thread.aspx?id=26550&upd=637530831298489293
 
 from sys import stdin, stdout
 
@@ -64,11 +64,10 @@ def find_path(telnum,  words):
     """
 
     solution = []
-    possible_paths = {'': {'numbers': '', 'path': [], 'num_index': 0}}
+    possible_paths = [{'numbers': '', 'path': [], 'num_index': 0}]
 
-    while len(possible_paths.keys()) > 0:
-        key = list(possible_paths.keys())[0]
-        node = possible_paths.pop(key)
+    while len(possible_paths) > 0:
+        node = possible_paths.pop(0)
         # print(node)
         if node['numbers'] == telnum:
             if len(solution) == 0 or len(node['path']) < len(solution):
@@ -78,8 +77,7 @@ def find_path(telnum,  words):
                 # print(word, word_to_num(word), telnum[node['num_index']:node['num_index']+len(word)])
                 if word_to_num(word) == telnum[node['num_index']:node['num_index']+len(word)]:
                     # print('Hello!')
-                    if node['numbers']+word_to_num(word) not in possible_paths or len(node['path']) < len(possible_paths[node['numbers']+word_to_num(word)]['path']):
-                        possible_paths[node['numbers']+word_to_num(word)] = {'numbers': node['numbers']+word_to_num(word), 'path': node['path'] + [word], 'num_index':node['num_index']+len(word)}
+                    possible_paths.append({'numbers': node['numbers']+word_to_num(word), 'path': node['path'] + [word], 'num_index':node['num_index']+len(word)})
                 # print(possible_paths)
     return solution
 
@@ -89,7 +87,7 @@ lines = stdin.read().split()
 while lines[index] != '-1':
     telnum = lines[index].strip()
     word_count = int(lines[index+1])
-    words = sorted([word.strip() for word in lines[index+2:index+2+word_count]], key = lambda x: len(x))
+    words = [word.strip() for word in lines[index+2:index+2+word_count]]
     index = index + 2 + word_count
 
     # print('\n' * 3 + '=' * 30)

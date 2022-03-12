@@ -1,7 +1,8 @@
 ### Site: https://acm.timus.ru/
 ### Problem: 1002
 
-### Status: Accepted
+### Failed on Test 5, see example https://acm.timus.ru/forum/thread.aspx?id=26550&upd=637530831298489293
+
 
 from sys import stdin, stdout
 
@@ -63,25 +64,22 @@ def find_path(telnum,  words):
     :return:
     """
 
-    solution = []
-    possible_paths = {'': {'numbers': '', 'path': [], 'num_index': 0}}
+    solutions = []
+    possible_paths = [{'numbers': '', 'path': [], 'num_index': 0}]
 
-    while len(possible_paths.keys()) > 0:
-        key = list(possible_paths.keys())[0]
-        node = possible_paths.pop(key)
+    while len(possible_paths) > 0:
+        node = possible_paths.pop(0)
         # print(node)
         if node['numbers'] == telnum:
-            if len(solution) == 0 or len(node['path']) < len(solution):
-                solution = node['path']
+            solutions.append(node['path'])
         else:
             for word in words:
                 # print(word, word_to_num(word), telnum[node['num_index']:node['num_index']+len(word)])
                 if word_to_num(word) == telnum[node['num_index']:node['num_index']+len(word)]:
                     # print('Hello!')
-                    if node['numbers']+word_to_num(word) not in possible_paths or len(node['path']) < len(possible_paths[node['numbers']+word_to_num(word)]['path']):
-                        possible_paths[node['numbers']+word_to_num(word)] = {'numbers': node['numbers']+word_to_num(word), 'path': node['path'] + [word], 'num_index':node['num_index']+len(word)}
+                    possible_paths.append({'numbers': node['numbers']+word_to_num(word), 'path': node['path'] + [word], 'num_index':node['num_index']+len(word)})
                 # print(possible_paths)
-    return solution
+    return solutions
 
 
 index = 0
@@ -95,9 +93,10 @@ while lines[index] != '-1':
     # print('\n' * 3 + '=' * 30)
     # print(telnum, words)
 
-    solution = find_path(telnum, words)
+    solutions = find_path(telnum, words)
     # print(solutions)
-    if len(solution) == 0:
+    if len(solutions) == 0:
         stdout.write('No solution.\n')
     else:
+        solution = min(solutions, key = lambda x: len(x))
         stdout.write(' '.join(solution) + '\n')
